@@ -1,57 +1,52 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Handy
 {
-    public class ObejctPool<T> : Singleton<ObejctPool<T>> where T : new()
+    public class ObejctPool<T> :Singleton<ObejctPool<T>> where T : new()
     {
         private Stack<T> objectPools = new Stack<T>();
         private List<T> activeObjects = new List<T>();
+
         public void CreatePool(int maxSize)
         {
-            activeObjects.Clear();
             objectPools.Clear();
+            activeObjects.Clear();
             objectPools = new Stack<T>(maxSize);
-            for(int i=0; i<maxSize; ++i)
+            for (int i = 0; i < maxSize; ++i)
             {
                 objectPools.Push(new T());
             }
         }
+
         public T Pop()
         {
-            T obj;
+            T item;
             if (objectPools.Count > 0)
             {
-                obj = objectPools.Pop();
+                item = objectPools.Pop();
             }
             else
             {
-                obj = new T();
+                item = new T();
             }
-            activeObjects.Add(obj);
-            return obj;
+            activeObjects.Add(item);
+            return item;
         }
-        public void Push(T obj)
+        public void Push(T item)
         {
-            var find = false;
-            for(int i=0; i<activeObjects.Count; ++i)
+            for(int i=0;i<activeObjects.Count; ++i)
             {
-                if(activeObjects[i].GetHashCode() == obj.GetHashCode())
+                if(activeObjects[i].GetHashCode() == item.GetHashCode())
                 {
-                    find = true;
+                    activeObjects.Remove(activeObjects[i]);
                     break;
                 }
             }
-            if(find == true)
-            {
-                activeObjects.Remove(obj);
-            }
-            objectPools.Push(obj);
-        }
-        public void Clear()
-        {
-            activeObjects.Clear();
-            objectPools.Clear();
+            objectPools.Push(item);
         }
     }
 }

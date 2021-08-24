@@ -7,9 +7,9 @@ namespace Handy
         private static T instance = null;
         public static T Instance
         {
-            get 
+            get
             {
-                if(instance == null)
+                if (instance == null)
                 {
                     var obj = GameObject.Find(typeof(T).Name);
                     if (obj == null)
@@ -22,7 +22,7 @@ namespace Handy
                         instance = obj.GetComponent<T>();
                     }
                 }
-                
+
                 return instance;
             }
         }
@@ -32,3 +32,4 @@ namespace Handy
         }
     }
 }
+
