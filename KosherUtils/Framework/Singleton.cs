@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ValetonUtils.Framework
+namespace KosherUtils.Framework
 {
     public class Singleton<T> where T : new()
     {

@@ -1,7 +1,7 @@
-﻿using ValetonUtils.Framework;
+﻿using KosherUtils.Framework;
 using System.Collections.Generic;
 
-namespace ValetonUtils.ObjectPool
+namespace KosherUtils.ObjectPool
 {
     public class ObejctPool<T> :Singleton<ObejctPool<T>> where T : new()
     {

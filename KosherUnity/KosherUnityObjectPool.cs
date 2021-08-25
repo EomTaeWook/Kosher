@@ -10,13 +10,13 @@ namespace KosherUnity
         private List<ObjectPoolData> objectPools = new List<ObjectPoolData>();
         private List<ObjectPoolData> activeObjects = new List<ObjectPoolData>();
 
-        public static T Location<T>(T prefab) where T : Component
+        public static T CallLocation<T>(T prefab) where T : Component
         {
             var component = KosherUnityObjectPool.Instance.Pop<T>(prefab.gameObject);
             component.gameObject.transform.SetParent(null);
             return component;
         }
-        public static T Location<T>(T prefab, Transform parent) where T : Component
+        public static T CallLocation<T>(T prefab, Transform parent) where T : Component
         {
             var component = KosherUnityObjectPool.Instance.Pop<T>(prefab.gameObject);
             component.gameObject.transform.SetParent(parent);

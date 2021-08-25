@@ -7,8 +7,8 @@
     <ProjectGuid>{FA507C5D-AF29-4955-B3F8-83A36C2D8E7B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>KosherUntiy</RootNamespace>
-    <AssemblyName>KosherUntiy</AssemblyName>
+    <RootNamespace>KosherUnity</RootNamespace>
+    <AssemblyName>KosherUnity</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -45,8 +45,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Coroutine\KosherUnityCoroutine.cs" />
     <Compile Include="Datas\ObjectPoolData.cs" />
     <Compile Include="Extensions\ObjectPoolExtensions.cs" />
+    <Compile Include="Coroutine\KosherUnityCoroutineManager.cs" />
+    <Compile Include="KosherUnitySceneManager.cs" />
+    <Compile Include="KosherUnityResourceCache.cs" />
     <Compile Include="KosherUnityObjectPool.cs" />
     <Compile Include="SingletonWithMonoBehaviour.cs" />
   </ItemGroup>
@@ -63,6 +67,7 @@
   <PropertyGroup>
     <PostBuildEvent>xcopy /S/Y "$(TargetPath)" "$(SolutionDir)UnityTest\Assets\Plugins\$(ConfigurationName)\"
 xcopy /S/Y "$(TargetDir)KosherUtils.dll" "$(SolutionDir)UnityTest\Assets\Plugins\$(ConfigurationName)\"
+xcopy /S/Y "$(TargetDir)NLog.dll" "$(SolutionDir)UnityTest\Assets\Plugins\$(ConfigurationName)\"
 </PostBuildEvent>
   </PropertyGroup>
 </Project>

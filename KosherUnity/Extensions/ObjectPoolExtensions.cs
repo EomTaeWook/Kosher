@@ -2,15 +2,15 @@
 
 namespace KosherUnity
 {
-    public static class ObjectPoolExtensions
+    public static class KosherObjectPoolExtensions
     {
-        public static void Recycle(this GameObject gameObject)
+        public static void Recall(this GameObject gameObject)
         {
             gameObject.transform.SetParent(KosherUnityObjectPool.Instance.transform);
             gameObject.SetActive(false);
             KosherUnityObjectPool.Instance.Push(gameObject);
         }
-        public static void Recycle<T>(this Component component) where T : Component
+        public static void Recall<T>(this Component component) where T : Object
         {
             component.transform.SetParent(KosherUnityObjectPool.Instance.transform);
             component.gameObject.SetActive(false);
