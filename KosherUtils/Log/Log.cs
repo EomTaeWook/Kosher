@@ -1,6 +1,6 @@
 ﻿namespace KosherUtils.Log
 {
-    class Log
+    public class Log
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         public static void Debug(string logMessage)
