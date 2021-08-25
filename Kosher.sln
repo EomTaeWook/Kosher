@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31410.357
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KosherUnity", KosherUnity\KosherUnity.csproj", "{FA507C5D-AF29-4955-B3F8-83A36C2D8E7B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KosherUnity", "KosherUnity\KosherUnity.csproj", "{FA507C5D-AF29-4955-B3F8-83A36C2D8E7B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KosherUtils", KosherUtils\KosherUtils.csproj", "{CBFCE5BE-921D-4EEE-9C99-9F2FFB667834}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KosherUtils", "KosherUtils\KosherUtils.csproj", "{CBFCE5BE-921D-4EEE-9C99-9F2FFB667834}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

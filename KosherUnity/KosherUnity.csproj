@@ -53,10 +53,16 @@
   <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\KosherUtils\KosherUtils.csproj">
+      <Project>{cbfce5be-921d-4eee-9c99-9f2ffb667834}</Project>
+      <Name>KosherUtils</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy /S/Y "$(TargetPath)" "$(SolutionDir)HandyTest\Assets\Plugins\$(ConfigurationName)\"
-
+    <PostBuildEvent>xcopy /S/Y "$(TargetPath)" "$(SolutionDir)UnityTest\Assets\Plugins\$(ConfigurationName)\"
+xcopy /S/Y "$(TargetDir)KosherUtils.dll" "$(SolutionDir)UnityTest\Assets\Plugins\$(ConfigurationName)\"
 </PostBuildEvent>
   </PropertyGroup>
 </Project>

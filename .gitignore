@@ -1,13 +1,7 @@
 *.suo
-Handy/Handy/obj/
-Handy/Handy/Properties/
-Handy/Handy/bin/
-Handy/bin/
-Handy/obj/
-Handy/Properties/
-HandyTest/Library/
-HandyTest/obj/
-HandyTest/Temp/
+UnityTest/Library/
+UnityTest/obj/
+UnityTest/Temp/
 packages/
 KosherUtils/obj/
 KosherUtils/bin/
