@@ -8,3 +8,7 @@ Handy/Properties/
 HandyTest/Library/
 HandyTest/obj/
 HandyTest/Temp/
+packages/
+KosherUtils/obj/
+KosherUtils/bin/
+KosherUnity/obj/

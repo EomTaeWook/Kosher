@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Handy
+namespace ValetonUtils.Framework
 {
     public class Singleton<T> where T : new()
     {

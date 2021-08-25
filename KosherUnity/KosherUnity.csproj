@@ -7,8 +7,8 @@
     <ProjectGuid>{FA507C5D-AF29-4955-B3F8-83A36C2D8E7B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Handy</RootNamespace>
-    <AssemblyName>Handy</AssemblyName>
+    <RootNamespace>KosherUntiy</RootNamespace>
+    <AssemblyName>KosherUntiy</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -47,9 +47,7 @@
   <ItemGroup>
     <Compile Include="Datas\ObjectPoolData.cs" />
     <Compile Include="Extensions\ObjectPoolExtensions.cs" />
-    <Compile Include="ObejctPool.cs" />
-    <Compile Include="ObejctPoolWithMonoBehaviour.cs" />
-    <Compile Include="Singleton.cs" />
+    <Compile Include="KosherUnityObjectPool.cs" />
     <Compile Include="SingletonWithMonoBehaviour.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,10 +1,7 @@
-﻿using System;
+﻿using ValetonUtils.Framework;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Handy
+namespace ValetonUtils.ObjectPool
 {
     public class ObejctPool<T> :Singleton<ObejctPool<T>> where T : new()
     {
@@ -47,6 +44,11 @@ namespace Handy
                 }
             }
             objectPools.Push(item);
+        }
+        public void Clear()
+        {
+            activeObjects.Clear();
+            objectPools.Clear();
         }
     }
 }

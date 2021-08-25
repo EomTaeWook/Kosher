@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Handy
+namespace KosherUnity
 {
     public class SingletonWithMonoBehaviour<T> : MonoBehaviour where T : MonoBehaviour
     {

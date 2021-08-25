@@ -1,24 +1,24 @@
-﻿using Handy;
-using System;
+﻿using KosherUnity.Datas;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Handy
+namespace KosherUnity
 {
-    public class HandyObjectPool : SingletonWithMonoBehaviour<HandyObjectPool>
+
+    public class KosherUnityObjectPool : SingletonWithMonoBehaviour<KosherUnityObjectPool>
     {
         private List<ObjectPoolData> objectPools = new List<ObjectPoolData>();
         private List<ObjectPoolData> activeObjects = new List<ObjectPoolData>();
 
         public static T Spawn<T>(T prefab) where T : Component
         {
-            var component = HandyObjectPool.Instance.Pop<T>(prefab.gameObject);
+            var component = KosherUnityObjectPool.Instance.Pop<T>(prefab.gameObject);
             component.gameObject.transform.SetParent(null);
             return component;
         }
         public static T Spawn<T>(T prefab, Transform parent) where T : Component
         {
-            var component = HandyObjectPool.Instance.Pop<T>(prefab.gameObject);
+            var component = KosherUnityObjectPool.Instance.Pop<T>(prefab.gameObject);
             component.gameObject.transform.SetParent(parent);
             component.gameObject.gameObject.SetActive(true);
             return component;
