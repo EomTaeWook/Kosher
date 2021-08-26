@@ -1,20 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using KosherUnity.Coroutine;
 using KosherUtils.Framework;
-using UnityEngine.SceneManagement;
-using KosherUnity.Coroutine;
+using System;
 using System.Collections;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace KosherUnity
 {
     public class KosherUnitySceneManager : Singleton<KosherUnitySceneManager>
     {
+        public string PreviousSceneName { get; private set; }
+
+        public string CurrentSceneName { get; private set; }
+
         public void LoadScene(string sceneName)
         {
+            PreviousSceneName = CurrentSceneName;
+            CurrentSceneName = sceneName;
             SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
         }
         public void LoadAddScene(string sceneName)
@@ -23,6 +25,8 @@ namespace KosherUnity
         }
         public void LoadSceneAsync(string sceneName, Action onCallback)
         {
+            PreviousSceneName = CurrentSceneName;
+            CurrentSceneName = sceneName;
             var handle = KosherUnityCoroutineManager.StartCoroutine(ProcessLoadScene(sceneName), () =>
             {
                 onCallback?.Invoke();
