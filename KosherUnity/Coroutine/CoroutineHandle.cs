@@ -18,7 +18,6 @@ namespace KosherUnity.Coroutine
 
         public bool Stop()
         {
-            this.enumerator = null;
             return IsRunning && KosherUnityCoroutineManager.Instance.Stop(this);
         }
 

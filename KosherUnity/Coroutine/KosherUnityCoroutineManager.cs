@@ -2,10 +2,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace KosherUnity.Coroutine
 {
-    public class KosherUnityCoroutineManager : Singleton<KosherUnityCoroutineManager>
+    public class KosherUnityCoroutineManager : SingletonWithMonoBehaviour<KosherUnityCoroutineManager>
     {
         private List<IEnumerator> workers = new List<IEnumerator>();
         private List<float> delays = new List<float>();
@@ -78,6 +79,10 @@ namespace KosherUnity.Coroutine
         {
             workers.Clear();
             delays.Clear();
+        }
+        void Update()
+        {
+            Update(Time.deltaTime);
         }
         private bool MoveNext(IEnumerator routine, int index)
         {
