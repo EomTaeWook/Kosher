@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using UnityEngine;
 using KosherUtils.Framework;
 using UnityEngine.SceneManagement;
+using KosherUnity.Coroutine;
+using System.Collections;
 
 namespace KosherUnity
 {
@@ -21,12 +23,22 @@ namespace KosherUnity
         }
         public void LoadSceneAsync(string sceneName, Action onCallback)
         {
-            AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
-
-            KosherUnityCoroutine.StartCoroutine(asyncOperation, (o) =>
+            var handle = KosherUnityCoroutineManager.StartCoroutine(ProcessLoadScene(sceneName), () =>
             {
                 onCallback?.Invoke();
             });
+
+        }
+        private IEnumerator ProcessLoadScene(string sceneName)
+        {
+            AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
+
+            while(asyncOperation.isDone == false)
+            {
+                yield return null;
+            }
+
+            yield break;
         }
     }
 }

@@ -12,9 +12,7 @@ namespace KosherUnity
         }
         public static void Recall<T>(this Component component) where T : Object
         {
-            component.transform.SetParent(KosherUnityObjectPool.Instance.transform);
-            component.gameObject.SetActive(false);
-            KosherUnityObjectPool.Instance.Push(component.gameObject);
+            component.gameObject.Recall();
         }
     }
 }

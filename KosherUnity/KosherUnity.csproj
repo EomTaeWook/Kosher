@@ -45,10 +45,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Coroutine\KosherUnityCoroutine.cs" />
+    <Compile Include="Coroutine\CoroutineHandle.cs" />
+    <Compile Include="Coroutine\KosherUnityCoroutineManager.cs" />
     <Compile Include="Datas\ObjectPoolData.cs" />
     <Compile Include="Extensions\ObjectPoolExtensions.cs" />
-    <Compile Include="Coroutine\KosherUnityCoroutineManager.cs" />
     <Compile Include="KosherUnitySceneManager.cs" />
     <Compile Include="KosherUnityResourceCache.cs" />
     <Compile Include="KosherUnityObjectPool.cs" />
