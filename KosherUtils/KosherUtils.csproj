@@ -49,6 +49,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Coroutine\CoroutineHandle.cs" />
+    <Compile Include="Coroutine\CoroutineWoker.cs" />
+    <Compile Include="Coroutine\Interface\ICoroutineWoker.cs" />
     <Compile Include="Log\Log.cs" />
     <Compile Include="ObjectPool\ObejctPool.cs" />
     <Compile Include="Framework\Singleton.cs" />

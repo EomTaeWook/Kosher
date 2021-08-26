@@ -64,8 +64,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\KosherUnityCoroutine.cs" />
-    <Compile Include="Assets\Scripts\KosherUnitySceneManager.cs" />
     <Compile Include="Assets\Scripts\NewTestScene.cs" />
     <Compile Include="Assets\Scripts\SampleScene.cs" />
     <Compile Include="Assets\Scripts\TempUI.cs" />

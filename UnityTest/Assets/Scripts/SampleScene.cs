@@ -35,7 +35,7 @@ public class SampleScene : MonoBehaviour
         {
             items[i].Recall<TempUI>();
         }
-        UnityTest.KosherUnitySceneManager.Instance.LoadSceneAsync("NewTestScene", () => 
+        KosherUnitySceneManager.Instance.LoadSceneAsync("NewTestScene", () => 
         {
             Debug.Log("complete");
         });

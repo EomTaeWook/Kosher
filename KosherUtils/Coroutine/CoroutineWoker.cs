@@ -1,35 +1,36 @@
-﻿using KosherUtils.Coroutine;
-using KosherUtils.Coroutine.Interface;
-using KosherUtils.Framework;
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Collections;
+using KosherUtils.Coroutine.Interface;
 
-namespace KosherUnity.Coroutine
+namespace KosherUtils.Coroutine
 {
-    public class KosherUnityCoroutineManager : SingletonWithMonoBehaviour<KosherUnityCoroutineManager>, ICoroutineWoker
+    public class CoroutineWoker : ICoroutineWoker
     {
         private List<IEnumerator> workers = new List<IEnumerator>();
         private List<float> delays = new List<float>();
-        public static CoroutineHandle StartCoroutine(IEnumerator enumerator, Action onCompleteCallback)
-        {
-            return StartCoroutine(0, enumerator, onCompleteCallback);
-        }
-        public static CoroutineHandle StartCoroutine(float delay, IEnumerator enumerator, Action onCompleteCallback)
-        {
-            var handle = new CoroutineHandle(KosherUnityCoroutineManager.Instance, enumerator, onCompleteCallback);
 
-            KosherUnityCoroutineManager.Instance.workers.Add(handle);
-            KosherUnityCoroutineManager.Instance.delays.Add(delay);
+        public CoroutineHandle Start(float delay, IEnumerator enumerator, Action onCompleteCallback = null)
+        {
+            var handle = new CoroutineHandle(this, enumerator, onCompleteCallback);
+            workers.Add(handle);
+            delays.Add(delay);
+
             return handle;
+        }
+        public CoroutineHandle Start(IEnumerator enumerator, Action onCompleteCallback = null)
+        {
+            return Start(0, enumerator, onCompleteCallback);
         }
 
         public bool IsRunning(IEnumerator enumerator)
         {
-            for(int i=0; i< workers.Count; ++i)
+            for (int i = 0; i < workers.Count; ++i)
             {
-                if(workers[i] == enumerator)
+                if (workers[i] == enumerator)
                 {
                     return true;
                 }
@@ -39,9 +40,9 @@ namespace KosherUnity.Coroutine
 
         public bool Stop(IEnumerator enumerator)
         {
-            for(int i=0; i<workers.Count; ++i)
+            for (int i = 0; i < workers.Count; ++i)
             {
-                if(workers[i] == enumerator)
+                if (workers[i] == enumerator)
                 {
                     workers[i] = null;
                     return true;
@@ -49,17 +50,13 @@ namespace KosherUnity.Coroutine
             }
             return false;
         }
+
         public void StopAll()
         {
             workers.Clear();
             delays.Clear();
         }
-
-        private void Update()
-        {
-            WorkerUpdate(Time.deltaTime);
-        }
-        private bool WorkerUpdate(float deltaTime)
+        public bool WorkerUpdate(float deltaTime)
         {
             if (workers.Count > 0)
             {
@@ -86,7 +83,6 @@ namespace KosherUnity.Coroutine
             }
             return false;
         }
-
         private bool MoveNext(IEnumerator enumerator, int index)
         {
             if (enumerator.Current is IEnumerator)
