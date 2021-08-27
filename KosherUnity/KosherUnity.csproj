@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="Coroutine\KosherUnityCoroutineManager.cs" />
     <Compile Include="Datas\ObjectPoolData.cs" />
+    <Compile Include="Datas\ObjectPoolItem.cs" />
     <Compile Include="Extensions\ObjectPoolExtensions.cs" />
     <Compile Include="KosherUnitySceneManager.cs" />
     <Compile Include="KosherUnityResourceCache.cs" />

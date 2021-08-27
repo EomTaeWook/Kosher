@@ -6,6 +6,7 @@ using UnityEngine;
 public class SampleScene : MonoBehaviour
 {
     public TempUI TestObject;
+    public TempUI1 TestObject1;
     public Transform Test;
     // Start is called before the first frame update
 
@@ -31,14 +32,14 @@ public class SampleScene : MonoBehaviour
             obj.text.text = $"test{i + 10 }";
             items.Add(obj);
         }
-        for(int i=0; i<items.Count; ++i)
-        {
-            items[i].Recall<TempUI>();
-        }
-        KosherUnitySceneManager.Instance.LoadSceneAsync("NewTestScene", () => 
-        {
-            Debug.Log("complete");
-        });
+        //for(int i=0; i<items.Count; ++i)
+        //{
+        //    items[i].Recycle();
+        //}
+
+        var temp1 = GameObject.Instantiate(TestObject1, Test);
+        temp1.Recall<TempUI1>();
+
     }
 
     // Update is called once per frame

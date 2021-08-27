@@ -1,9 +1,10 @@
 ﻿using KosherUtils.Framework;
+using KosherUtils.ObjectPool.Interface;
 using System.Collections.Generic;
 
 namespace KosherUtils.ObjectPool
 {
-    public class ObejctPool<T> :Singleton<ObejctPool<T>> where T : new()
+    public class ObejctPool<T> :Singleton<ObejctPool<T>> where T : IObjectPoolItem, IObjectPool<T>, new()
     {
         private Stack<T> objectPools = new Stack<T>();
         private List<T> activeObjects = new List<T>();
@@ -47,7 +48,10 @@ namespace KosherUtils.ObjectPool
         }
         public void Clear()
         {
-            activeObjects.Clear();
+            for(int i=0; i< activeObjects.Count; ++i)
+            {
+                activeObjects[i].Recycle();
+            }
             objectPools.Clear();
         }
     }
