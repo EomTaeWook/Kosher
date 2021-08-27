@@ -36,15 +36,30 @@ namespace KosherUtils.ObjectPool
         }
         public void Push(T item)
         {
+            T findObject = default;
             for(int i=0;i<activeObjects.Count; ++i)
             {
                 if(activeObjects[i].GetHashCode() == item.GetHashCode())
                 {
-                    activeObjects.Remove(activeObjects[i]);
+                    findObject = activeObjects[i];
                     break;
                 }
             }
-            objectPools.Push(item);
+
+            if(findObject!=null)
+            {
+                activeObjects.Remove(findObject);
+            }
+            else
+            {
+                if(CheckAlreadyPool(item) == true)
+                {
+                    return;
+                }
+                findObject = item;
+            }
+            
+            objectPools.Push(findObject);
         }
         public void Clear()
         {
@@ -53,6 +68,10 @@ namespace KosherUtils.ObjectPool
                 activeObjects[i].Recycle();
             }
             objectPools.Clear();
+        }
+        private bool CheckAlreadyPool(T item)
+        {
+            return objectPools.Contains(item);
         }
     }
 }

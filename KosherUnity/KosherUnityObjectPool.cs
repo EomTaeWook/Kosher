@@ -43,7 +43,11 @@ namespace KosherUnity
             if (objectPoolData == null)
             {
                 var go = GameObject.Instantiate(item);
-                var objectPoolItem = go.gameObject.AddComponent<ObjectPoolItem>();
+                var objectPoolItem = go.gameObject.GetComponent<ObjectPoolItem>();
+                if (objectPoolItem == null)
+                {
+                    objectPoolItem = go.gameObject.AddComponent<ObjectPoolItem>();
+                }
                 objectPoolItem.Init(this);
                 objectPoolData = new ObjectPoolData()
                 {
@@ -71,7 +75,15 @@ namespace KosherUnity
             }
             else
             {
-                var objectPoolItem = item.gameObject.AddComponent<ObjectPoolItem>();
+                if (CheckAlreadyPool(item) == true)
+                {
+                    return;
+                }
+                var objectPoolItem = item.gameObject.GetComponent<ObjectPoolItem>();
+                if (objectPoolItem == null)
+                {
+                    objectPoolItem = item.gameObject.AddComponent<ObjectPoolItem>();
+                }
                 objectPoolItem.Init(this);
                 findObject = new ObjectPoolData()
                 {
@@ -84,9 +96,9 @@ namespace KosherUnity
         {
             for (int i = 0; i < activeObjects.Count; ++i)
             {
-                activeObjects[i].Component.gameObject.GetComponent<ObjectPoolItem>().Recycle();
+                GameObject.Destroy(activeObjects[i].Component.gameObject);
             }
-
+            activeObjects.Clear();
             for (int i = 0; i < objectPool.Count; ++i)
             {
                 GameObject.Destroy(objectPool[i].Component.gameObject);
@@ -112,7 +124,15 @@ namespace KosherUnity
             }
             else
             {
-                var objectPoolItem = item.gameObject.AddComponent<ObjectPoolItem>();
+                if(CheckAlreadyPool(item.gameObject) == true)
+                {
+                    return;
+                }
+                var objectPoolItem = item.gameObject.GetComponent<ObjectPoolItem>();
+                if(objectPoolItem == null)
+                {
+                    objectPoolItem = item.gameObject.AddComponent<ObjectPoolItem>();
+                }
                 objectPoolItem.Init(this);
                 findObject = new ObjectPoolData()
                 {
@@ -120,6 +140,18 @@ namespace KosherUnity
                 };
                 objectPool.Add(findObject);
             }
+        }
+        private bool CheckAlreadyPool(GameObject item)
+        {
+            foreach(var poolItem in objectPool)
+            {
+                if(poolItem.Component.gameObject == item)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }
