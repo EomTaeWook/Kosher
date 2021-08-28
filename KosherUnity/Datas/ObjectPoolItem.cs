@@ -1,4 +1,5 @@
-﻿using KosherUtils.ObjectPool.Interface;
+﻿using KosherUnity.Interface;
+using KosherUtils.ObjectPool.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,13 +11,14 @@ namespace KosherUnity.Datas
 {
     public class ObjectPoolItem : MonoBehaviour, IObjectPoolItem
     {
-        private IObjectPool<Component> objectPool;
-        public void Init(IObjectPool<Component> objectPool)
+        private IUnityObjectPool<Component> objectPool;
+        public void Init(IUnityObjectPool<Component> objectPool)
         {
             this.objectPool = objectPool;
         }
         public virtual void Recycle()
         {
+            this.transform.SetParent(this.objectPool.GetObjectPool().transform);
             this.objectPool.Push(this);
         }
     }

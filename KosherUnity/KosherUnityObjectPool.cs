@@ -1,12 +1,12 @@
 ﻿using KosherUnity.Datas;
-using KosherUtils.ObjectPool.Interface;
+using KosherUnity.Interface;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace KosherUnity
 {
 
-    public class KosherUnityObjectPool : SingletonWithMonoBehaviour<KosherUnityObjectPool>, IObjectPool<Component>
+    public class KosherUnityObjectPool : SingletonWithMonoBehaviour<KosherUnityObjectPool>, IUnityObjectPool<Component>
     {
         private List<ObjectPoolData> objectPool = new List<ObjectPoolData>();
         private List<ObjectPoolData> activeObjects = new List<ObjectPoolData>();
@@ -24,7 +24,52 @@ namespace KosherUnity
             component.gameObject.gameObject.SetActive(true);
             return component;
         }
+        public T Pop<T>(T item) where T : Component
+        {
+            ObjectPoolData objectPoolData = null;
 
+            for (int i = 0; i < objectPool.Count; ++i)
+            {
+                if (objectPool[i].Component.GetType() == typeof(T))
+                {
+                    objectPoolData = objectPool[i];
+                    break;
+                }
+                else if (objectPool[i].Component == null)
+                {
+                    var go = GameObject.Instantiate(item);
+                    var objectPoolItem = go.gameObject.GetComponent<ObjectPoolItem>();
+                    if (objectPoolItem == null)
+                    {
+                        objectPoolItem = go.gameObject.AddComponent<ObjectPoolItem>();
+                    }
+                    objectPoolItem.Init(this);
+                    objectPool[i].Component = go.GetComponent<T>();
+                    objectPoolData = objectPool[i];
+                    break;
+                }
+            }
+            if (objectPoolData != null)
+            {
+                objectPool.Remove(objectPoolData);
+            }
+            if (objectPoolData == null)
+            {
+                var go = GameObject.Instantiate(item);
+                var objectPoolItem = go.GetComponent<ObjectPoolItem>();
+                if (objectPoolItem == null)
+                {
+                    objectPoolItem = go.gameObject.AddComponent<ObjectPoolItem>();
+                }
+                objectPoolItem.Init(this);
+                objectPoolData = new ObjectPoolData()
+                {
+                    Component = go.GetComponent<T>(),
+                };
+            }
+            activeObjects.Add(objectPoolData);
+            return objectPoolData.Component.gameObject.GetComponent<T>();
+        }
         public T Pop<T>(GameObject item) where T : Component
         {
             ObjectPoolData objectPoolData = null;
@@ -152,6 +197,11 @@ namespace KosherUnity
             }
 
             return false;
+        }
+
+        public GameObject GetObjectPool()
+        {
+            return this.gameObject;
         }
     }
 }
