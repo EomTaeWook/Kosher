@@ -63,17 +63,21 @@ namespace KosherUtils.Coroutine
                     {
                         delays[i] -= deltaTime;
                     }
-                    else if (workers[i] == null)
+
+                    if (delays[i] <= 0F)
                     {
-                        workers.RemoveAt(i);
-                        delays.RemoveAt(i);
-                        i--;
-                    }
-                    else if (MoveNext(workers[i], i) == false)
-                    {
-                        workers.RemoveAt(i);
-                        delays.RemoveAt(i);
-                        i--;
+                        if (workers[i] == null)
+                        {
+                            workers.RemoveAt(i);
+                            delays.RemoveAt(i);
+                            i--;
+                        }
+                        else if (MoveNext(workers[i], i) == false)
+                        {
+                            workers.RemoveAt(i);
+                            delays.RemoveAt(i);
+                            i--;
+                        }
                     }
                 }
                 return true;
