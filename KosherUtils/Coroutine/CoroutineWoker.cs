@@ -41,7 +41,7 @@ namespace KosherUtils.Coroutine
             {
                 if (workers[i] == enumerator)
                 {
-                    workers[i] = null;
+                    workers.Remove(enumerator);
                     return true;
                 }
             }
