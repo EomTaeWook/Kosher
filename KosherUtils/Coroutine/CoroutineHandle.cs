@@ -17,13 +17,13 @@ namespace KosherUtils.Coroutine
         }
         public bool Stop()
         {
-            return IsRunning && coroutineWoker.Stop(enumerator);
+            return IsRunning && coroutineWoker.Stop(this);
         }
         public IEnumerator Wait()
         {
             if (enumerator != null)
             {
-                while (coroutineWoker.IsRunning(enumerator))
+                while (coroutineWoker.IsRunning(this))
                 {
                     yield return null;
                 }
@@ -46,7 +46,7 @@ namespace KosherUtils.Coroutine
 
         public bool IsRunning
         {
-            get { return enumerator != null && coroutineWoker.IsRunning(enumerator); }
+            get { return enumerator != null && coroutineWoker.IsRunning(this); }
         }
 
         public object Current => enumerator.Current;
