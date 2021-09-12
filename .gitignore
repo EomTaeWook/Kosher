@@ -7,3 +7,6 @@ KosherUtils/obj/
 KosherUtils/bin/
 KosherUnity/obj/
 KosherUnity/bin/
+Share/ExcelToJson/obj/
+Share/ExcelToJson/bin/
+Share/.vs/
