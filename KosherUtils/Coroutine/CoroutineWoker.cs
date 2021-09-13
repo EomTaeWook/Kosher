@@ -23,6 +23,15 @@ namespace KosherUtils.Coroutine
             return Start(0, enumerator, onCompleteCallback);
         }
 
+        public void Start(float delay, CoroutineHandle handle)
+        {
+            workers.Add(handle);
+            delays.Add(delay);
+        }
+        public void Start(CoroutineHandle handle)
+        {
+            Start(0, handle);
+        }
         public bool IsRunning(IEnumerator enumerator)
         {
             for (int i = 0; i < workers.Count; ++i)
@@ -42,6 +51,7 @@ namespace KosherUtils.Coroutine
                 if (workers[i] == enumerator)
                 {
                     workers.Remove(enumerator);
+                    delays.RemoveAt(i);
                     return true;
                 }
             }
