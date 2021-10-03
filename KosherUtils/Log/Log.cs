@@ -16,6 +16,7 @@ namespace KosherUtils.Log
         {
             logger.Info(logMessage);
         }
+        
         public static void Error(string logMessage)
         {
             logger.Error(logMessage);
