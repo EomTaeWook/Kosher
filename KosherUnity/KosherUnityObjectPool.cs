@@ -38,12 +38,6 @@ namespace KosherUnity
                 else if (objectPool[i].Component == null)
                 {
                     var go = GameObject.Instantiate(item);
-                    var objectPoolItem = go.gameObject.GetComponent<ObjectPoolItem>();
-                    if (objectPoolItem == null)
-                    {
-                        objectPoolItem = go.gameObject.AddComponent<ObjectPoolItem>();
-                    }
-                    objectPoolItem.Init(this);
                     objectPool[i].Component = go.GetComponent<T>();
                     objectPoolData = objectPool[i];
                     break;
@@ -56,12 +50,6 @@ namespace KosherUnity
             if (objectPoolData == null)
             {
                 var go = GameObject.Instantiate(item);
-                var objectPoolItem = go.GetComponent<ObjectPoolItem>();
-                if (objectPoolItem == null)
-                {
-                    objectPoolItem = go.gameObject.AddComponent<ObjectPoolItem>();
-                }
-                objectPoolItem.Init(this);
                 objectPoolData = new ObjectPoolData()
                 {
                     Component = go.GetComponent<T>(),
@@ -88,12 +76,6 @@ namespace KosherUnity
             if (objectPoolData == null)
             {
                 var go = GameObject.Instantiate(item);
-                var objectPoolItem = go.gameObject.GetComponent<ObjectPoolItem>();
-                if (objectPoolItem == null)
-                {
-                    objectPoolItem = go.gameObject.AddComponent<ObjectPoolItem>();
-                }
-                objectPoolItem.Init(this);
                 objectPoolData = new ObjectPoolData()
                 {
                     Component = go.GetComponent<T>(),
@@ -124,12 +106,7 @@ namespace KosherUnity
                 {
                     return;
                 }
-                var objectPoolItem = item.gameObject.GetComponent<ObjectPoolItem>();
-                if (objectPoolItem == null)
-                {
-                    objectPoolItem = item.gameObject.AddComponent<ObjectPoolItem>();
-                }
-                objectPoolItem.Init(this);
+
                 findObject = new ObjectPoolData()
                 {
                     Component = item.GetComponent<T>(),
@@ -173,12 +150,7 @@ namespace KosherUnity
                 {
                     return;
                 }
-                var objectPoolItem = item.gameObject.GetComponent<ObjectPoolItem>();
-                if(objectPoolItem == null)
-                {
-                    objectPoolItem = item.gameObject.AddComponent<ObjectPoolItem>();
-                }
-                objectPoolItem.Init(this);
+
                 findObject = new ObjectPoolData()
                 {
                     Component = item,

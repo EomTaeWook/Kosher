@@ -23,13 +23,13 @@ namespace KosherUnity
         {
             SceneManager.LoadScene(sceneName, LoadSceneMode.Additive);
         }
-        public void LoadSceneAsync(string sceneName, Action onCallback)
+        public void LoadSceneAsync(string sceneName, Action onEndCallback)
         {
             PreviousSceneName = CurrentSceneName;
             CurrentSceneName = sceneName;
             var handle = KosherUnityCoroutineManager.StartCoroutine(ProcessLoadScene(sceneName), () =>
             {
-                onCallback?.Invoke();
+                onEndCallback?.Invoke();
             });
 
         }
