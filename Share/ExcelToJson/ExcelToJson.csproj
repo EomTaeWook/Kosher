@@ -73,7 +73,7 @@
     <Compile Include="Data\Config.cs" />
     <Compile Include="Data\Enums.cs" />
     <Compile Include="Data\Interface\IExcelTemplate.cs" />
-    <Compile Include="Extensions\WorksheetExtension.cs" />
+    <Compile Include="Data\Define.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ExcelReader.cs" />
