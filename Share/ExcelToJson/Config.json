@@ -1,4 +1,4 @@
 {
-  "ReadPath": "..\\..\\..\\..\\ExcelTemplate",
-  "OutputPath" : ".\\Temp"
+  "ReadPath": "..\\..\\..\\..\\ExcelTemplate\\",
+  "OutputPath" : ".\\Temp\\"
 }

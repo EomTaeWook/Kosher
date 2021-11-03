@@ -16,17 +16,33 @@ namespace ExcelToJson
             {
                 var config = Newtonsoft.Json.JsonConvert.DeserializeObject<Config>(File.ReadAllText("config.json"));
 
-                ExcelReader excelReader = new ExcelReader();
+                DirectoryInfo directoryInfo = new DirectoryInfo(config.ReadPath);
+
+                var files = new List<FileInfo>();
+                foreach(var file in directoryInfo.GetFiles())
                 {
-                    excelReader.Read($@"C:\Users\trim0\Documents\source\Handy\Share\ExcelTemplate\UserGroup.xlsx");
+                    if(file.Extension.Equals("xlsx") == true)
+                    {
+                        files.Add(file);
+                    }
+                }
+
+                ExcelReader excelReader = new ExcelReader();
+
+                foreach(var file in files)
+                {
+                    excelReader.Read(file.FullName, config.OutputPath);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(ex.Message);
             }
-                        
+
+            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($@"작업이 완료되었습니다. 파일을 확인해주세요.");
             Console.ReadLine();
         }
         
