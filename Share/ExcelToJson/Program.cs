@@ -21,7 +21,7 @@ namespace ExcelToJson
                 var files = new List<FileInfo>();
                 foreach(var file in directoryInfo.GetFiles())
                 {
-                    if(file.Extension.Equals("xlsx") == true)
+                    if(file.Extension.Equals(".xlsx") == true)
                     {
                         files.Add(file);
                     }

@@ -34,6 +34,11 @@ namespace ExcelToJson
             }
             var define = GetDefintFromDataTable(defineTable);
 
+            if(define.ContainsKey("Id") == false)
+            {
+                throw new FormatException("Id는 필수입니다.");
+            }
+
             var jsonDatas = MakeJsonObjectFromDataTable(define, dataTable);
 
             ExportJsonFile(outputPath, fileName, jsonDatas);
