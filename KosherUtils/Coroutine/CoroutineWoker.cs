@@ -72,6 +72,7 @@ namespace KosherUtils.Coroutine
                     if (delays[i] > 0f)
                     {
                         delays[i] -= deltaTime;
+                        continue;
                     }
 
                     if (delays[i] <= 0F)
