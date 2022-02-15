@@ -6,7 +6,6 @@ using UnityEngine;
 
 namespace KosherUnity
 {
-
     public class KosherUnityObjectPool : SingletonWithMonoBehaviour<KosherUnityObjectPool>, IUnityObjectPool<Component>
     {
         private List<ObjectPoolData> objectPool = new List<ObjectPoolData>();
@@ -64,7 +63,7 @@ namespace KosherUnity
             ObjectPoolData objectPoolData = null;
             for (int i = 0; i < objectPool.Count; ++i)
             {
-                if(objectPool[i].Component.GetType() == typeof(T))
+                if (objectPool[i].Component.GetType() == item.GetComponent<T>().GetType())
                 {
                     objectPoolData = objectPool[i];
                     break;
