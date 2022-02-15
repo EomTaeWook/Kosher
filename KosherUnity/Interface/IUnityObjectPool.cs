@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace KosherUnity.Interface
 {
-    public interface IUnityObjectPool<T> : IObjectPool<T>
+    public interface IUnityObjectPool<T> : IObjectPool where T : Component
     {
         GameObject GetObjectPool();
     }

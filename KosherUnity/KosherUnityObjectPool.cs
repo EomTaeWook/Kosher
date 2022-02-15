@@ -1,5 +1,6 @@
 ﻿using KosherUnity.Datas;
 using KosherUnity.Interface;
+using KosherUtils.ObjectPool.Interface;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -127,7 +128,7 @@ namespace KosherUnity
             }
             objectPool.Clear();
         }
-
+        
         public void Push(Component item)
         {
             ObjectPoolData findObject = null;
@@ -146,7 +147,7 @@ namespace KosherUnity
             }
             else
             {
-                if(CheckAlreadyPool(item.gameObject) == true)
+                if (CheckAlreadyPool(item.gameObject) == true)
                 {
                     return;
                 }
@@ -174,6 +175,11 @@ namespace KosherUnity
         public GameObject GetObjectPool()
         {
             return this.gameObject;
+        }
+
+        public void Push<T>(T item) where T : IObjectPoolItem
+        {
+            item.Recycle();
         }
     }
 }

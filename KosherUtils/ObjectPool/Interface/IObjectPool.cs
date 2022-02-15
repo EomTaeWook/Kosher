@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace KosherUtils.ObjectPool.Interface
 {
-    public interface IObjectPool<T>
+    public interface IObjectPool
     {
-        void Push(T item);
+        void Push<T>(T item) where T : IObjectPoolItem;
     }
 }
