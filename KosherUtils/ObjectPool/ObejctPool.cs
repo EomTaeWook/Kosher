@@ -49,16 +49,15 @@ namespace KosherUtils.ObjectPool
             if(findObject!=null)
             {
                 activeObjects.Remove(findObject);
+                return;
             }
-            else
+
+            if (CheckAlreadyPool(item) == true)
             {
-                if(CheckAlreadyPool(item) == true)
-                {
-                    return;
-                }
-                findObject = item;
+                return;
             }
-            
+            findObject = item;
+
             objectPools.Push(findObject);
         }
         public void Clear()

@@ -99,20 +99,19 @@ namespace KosherUnity
             {
                 activeObjects.Remove(findObject);
                 objectPool.Add(findObject);
+                return;
             }
-            else
-            {
-                if (CheckAlreadyPool(item) == true)
-                {
-                    return;
-                }
 
-                findObject = new ObjectPoolData()
-                {
-                    Component = item.GetComponent<T>(),
-                };
-                objectPool.Add(findObject);
+            if (CheckAlreadyPool(item) == true)
+            {
+                return;
             }
+
+            findObject = new ObjectPoolData()
+            {
+                Component = item.GetComponent<T>(),
+            };
+            objectPool.Add(findObject);
         }
         public void Clear()
         {
@@ -143,20 +142,19 @@ namespace KosherUnity
             {
                 activeObjects.Remove(findObject);
                 objectPool.Add(findObject);
+                return;
             }
-            else
-            {
-                if (CheckAlreadyPool(item.gameObject) == true)
-                {
-                    return;
-                }
 
-                findObject = new ObjectPoolData()
-                {
-                    Component = item,
-                };
-                objectPool.Add(findObject);
+            if (CheckAlreadyPool(item.gameObject) == true)
+            {
+                return;
             }
+
+            findObject = new ObjectPoolData()
+            {
+                Component = item,
+            };
+            objectPool.Add(findObject);
         }
         private bool CheckAlreadyPool(GameObject item)
         {
@@ -167,7 +165,6 @@ namespace KosherUnity
                     return true;
                 }
             }
-
             return false;
         }
 
