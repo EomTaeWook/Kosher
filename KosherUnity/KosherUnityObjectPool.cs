@@ -1,12 +1,11 @@
 ﻿using KosherUnity.Datas;
-using KosherUnity.Interface;
 using KosherUtils.ObjectPool.Interface;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace KosherUnity
 {
-    public class KosherUnityObjectPool : SingletonWithMonoBehaviour<KosherUnityObjectPool>, IUnityObjectPool<Component>
+    public class KosherUnityObjectPool : SingletonWithMonoBehaviour<KosherUnityObjectPool>, IObjectPool
     {
         private List<ObjectPoolData> objectPool = new List<ObjectPoolData>();
         private List<ObjectPoolData> activeObjects = new List<ObjectPoolData>();

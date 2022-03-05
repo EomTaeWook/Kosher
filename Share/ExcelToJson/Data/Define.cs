@@ -14,6 +14,8 @@ namespace ExcelToJson.Data
 
         public bool Required { get; set; }
 
+        public string Group { get; set; }
+
         public Type Type { get; set; }
     }
 }

@@ -12,7 +12,11 @@ namespace ExcelToJson.Data
         Type,
         Count,
         Required,
+
+        Member,
         RefTemplate,
         RefTemplateField,
+
+        Max,
     }
 }

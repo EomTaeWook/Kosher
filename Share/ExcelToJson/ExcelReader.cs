@@ -14,7 +14,7 @@ namespace ExcelToJson
     {
         private const string DataSheetName = "Data$";
         private const string DefineSheetName = "Define$";
-        private const string ConnectString = @"Provider=Microsoft.ACE.OLEDB.12.0; Data Source={0};Extended Properties=""Excel 12.0 Xml;HDR=YES""";
+        private const string ConnectString = @"Provider=Microsoft.ACE.OLEDB.12.0; Data Source={0};Extended Properties=""Excel 12.0 Xml;HDR=NO;IMEX=1;MAXSCANROWS=0""";
         public void Read(string excelPath, string outputPath)
         {
             var fileName = Path.GetFileNameWithoutExtension(excelPath);
@@ -32,30 +32,46 @@ namespace ExcelToJson
             {
                 throw new Exception($"Not found Data DataSheet");
             }
-            var define = GetDefintFromDataTable(defineTable);
+            var define = GetDefineFromDataTable(defineTable);
 
-            if(define.ContainsKey("Id") == false)
-            {
-                throw new FormatException("Id는 필수입니다.");
-            }
+            ValidateDataTable(define, dataTable);
 
             var jsonDatas = MakeJsonObjectFromDataTable(define, dataTable);
 
             ExportJsonFile(outputPath, fileName, jsonDatas);
         }
-
-        private void ExportJsonFile(string outputPath, string fileName, List<Dictionary<string, object>> jsonDatas)
+        private void ValidateDataTable(Dictionary<string, Define> define, DataTable dataTable)
         {
-            if(Directory.Exists(outputPath) == false)
+            if (define.ContainsKey("Id") == false)
             {
-                Directory.CreateDirectory(outputPath);
+                throw new FormatException("Id는 필수입니다.");
             }
-            
-            var json = Newtonsoft.Json.JsonConvert.SerializeObject(jsonDatas, Newtonsoft.Json.Formatting.Indented);
-            File.WriteAllText($"{outputPath}{fileName}.json", json);
-            Console.ForegroundColor = ConsoleColor.Gray;
-            Console.WriteLine($"{outputPath}{fileName}.json 파일 생성");
+            else if (define.ContainsKey("Name") == false)
+            {
+                throw new FormatException("Name는 필수입니다.");
+            }
+
+            for(int i=0; i<dataTable.Rows.Count; ++i)
+            {
+                var idDataValue = dataTable.Rows[i]["Id"].ToString();
+
+                var nameDataValue = dataTable.Rows[i]["Name"].ToString();
+
+                for(int ii= i +1; ii<dataTable.Rows.Count; ++ii)
+                {
+                    if(dataTable.Rows[ii]["Id"].ToString().Equals(idDataValue))
+                    {
+                        throw new FormatException($"row {ii} Id 값이 중복입니다. id : {idDataValue}");
+                    }
+
+                    if (dataTable.Rows[ii]["Name"].ToString().Equals(nameDataValue))
+                    {
+                        throw new FormatException($"row {ii} Name 값이 중복입니다. name : {nameDataValue}");
+                    }
+                }
+            }
         }
+        
         private List<Dictionary<string, object>>  MakeJsonObjectFromDataTable(Dictionary<string, Define> define, DataTable dataTable)
         {
             var jsonObjects = new List<Dictionary<string, object>>();
@@ -100,22 +116,51 @@ namespace ExcelToJson
             }
             return jsonObjects;
         }
+        private void ExportJsonFile(string outputPath, string fileName, List<Dictionary<string, object>> jsonDatas)
+        {
+            if (Directory.Exists(outputPath) == false)
+            {
+                Directory.CreateDirectory(outputPath);
+            }
 
-
-        private Dictionary<string,  Define> GetDefintFromDataTable(DataTable dataTable)
+            var json = Newtonsoft.Json.JsonConvert.SerializeObject(jsonDatas, Newtonsoft.Json.Formatting.Indented);
+            File.WriteAllText($"{outputPath}{fileName}.json", json);
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.WriteLine($"{outputPath}{fileName}.json 파일 생성");
+        }
+        private Dictionary<string,  Define> GetDefineFromDataTable(DataTable dataTable)
         {
             Dictionary<string, Define> defines = new Dictionary<string, Define>();
+            List<List<int>> defineMemberCount = new List<List<int>>();
 
-            foreach(DataRow row in dataTable.Rows)
+            for(var e = DefinitionColumnType.Name; e< DefinitionColumnType.Max; ++e)
             {
-                Define define = new Define();
-                define.Name = row["Name"].ToString();
-                define.Required = bool.Parse(row["Required"].ToString());
-                define.Count = int.Parse(row["Count"].ToString());
-                define.Type = Type.GetType($"System.{row["Type"]}", true, true);
-
-                defines.Add(define.Name, define);
+                defineMemberCount.Add(new List<int>());
             }
+            for (int i=0; i < (int)DefinitionColumnType.Max; ++i)
+            {
+                for(int ii=0; ii< dataTable.Rows[0].ItemArray.Length; ++ii)
+                {
+                    var value = dataTable.Rows[0].ItemArray[ii];
+                    if(value.ToString() == Enum.GetName(typeof(DefinitionColumnType), value.ToString()))
+                    {
+                        defineMemberCount[i].Add(ii);
+                    }
+                }
+            }
+
+
+
+            //foreach (DataRow row in dataTable.Rows)
+            //{
+            //    Define define = new Define();
+            //    define.Name = row["Name"].ToString();
+            //    define.Required = bool.Parse(row["Required"].ToString());
+            //    define.Count = int.Parse(row["Count"].ToString());
+            //    define.Type = Type.GetType($"System.{row["Type"]}", true, true);
+
+            //    defines.Add(define.Name, define);
+            //}
 
             return defines;
         }
@@ -140,10 +185,9 @@ namespace ExcelToJson
                         if (currentSheetName.Equals(sheetName))
                         {
                             cmd.CommandText = "SELECT * FROM [" + sheetName + "]";
-                            dataTable = new DataTable
-                            {
-                                TableName = sheetName
-                            };
+                            dataTable = new DataTable();
+                            dataTable.TableName = sheetName;
+
                             OleDbDataAdapter dataAdapter = new OleDbDataAdapter(cmd);
                             dataAdapter.Fill(dataTable);
                         }
