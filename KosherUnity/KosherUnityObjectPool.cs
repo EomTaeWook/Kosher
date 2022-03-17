@@ -116,12 +116,12 @@ namespace KosherUnity
         {
             for (int i = 0; i < activeObjects.Count; ++i)
             {
-                GameObject.Destroy(activeObjects[i].Component.gameObject);
+                GameObject.Destroy(activeObjects[i].Component);
             }
             activeObjects.Clear();
             for (int i = 0; i < objectPool.Count; ++i)
             {
-                GameObject.Destroy(objectPool[i].Component.gameObject);
+                GameObject.Destroy(objectPool[i].Component);
             }
             objectPool.Clear();
         }
