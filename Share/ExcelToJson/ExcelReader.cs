@@ -1,6 +1,5 @@
 ﻿
 using ExcelToJson.Data;
-using Microsoft.Office.Interop.Excel;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -12,6 +11,9 @@ namespace ExcelToJson
 {
     public class ExcelReader
     {
+        private Dictionary<string, string> findParent = new Dictionary<string, string>();
+
+
         private const string DataSheetName = "Data$";
         private const string DefineSheetName = "Define$";
         private const string ConnectString = @"Provider=Microsoft.ACE.OLEDB.12.0; Data Source={0};Extended Properties=""Excel 12.0 Xml;HDR=NO;IMEX=1;MAXSCANROWS=0""";
@@ -34,86 +36,149 @@ namespace ExcelToJson
             }
             var define = GetDefineFromDataTable(defineTable);
 
-            ValidateDataTable(define, dataTable);
+            //ValidateDataTable(define, dataTable);
 
             var jsonDatas = MakeJsonObjectFromDataTable(define, dataTable);
 
             ExportJsonFile(outputPath, fileName, jsonDatas);
         }
-        private void ValidateDataTable(Dictionary<string, Define> define, DataTable dataTable)
-        {
-            if (define.ContainsKey("Id") == false)
-            {
-                throw new FormatException("Id는 필수입니다.");
-            }
-            else if (define.ContainsKey("Name") == false)
-            {
-                throw new FormatException("Name는 필수입니다.");
-            }
+        //private void ValidateDataTable(Dictionary<string, Define> defineDatas, DataTable dataTable)
+        //{
+        //    if (defineDatas.ContainsKey("Id") == false)
+        //    {
+        //        throw new FormatException("Id는 필수입니다.");
+        //    }
+        //    else if (defineDatas.ContainsKey("Name") == false)
+        //    {
+        //        throw new FormatException("Name는 필수입니다.");
+        //    }
 
-            for(int i=0; i<dataTable.Rows.Count; ++i)
-            {
-                var idDataValue = dataTable.Rows[i]["Id"].ToString();
+        //    for (int i = 1; i < dataTable.Rows.Count; ++i)
+        //    {
+        //        for(int ii=0; ii<defineDatas.Values.Count; ++i)
+        //        {
+        //            var value = dataTable.Rows[i][ii];
+        //        }
+                
+        //    }
 
-                var nameDataValue = dataTable.Rows[i]["Name"].ToString();
 
-                for(int ii= i +1; ii<dataTable.Rows.Count; ++ii)
-                {
-                    if(dataTable.Rows[ii]["Id"].ToString().Equals(idDataValue))
-                    {
-                        throw new FormatException($"row {ii} Id 값이 중복입니다. id : {idDataValue}");
-                    }
 
-                    if (dataTable.Rows[ii]["Name"].ToString().Equals(nameDataValue))
-                    {
-                        throw new FormatException($"row {ii} Name 값이 중복입니다. name : {nameDataValue}");
-                    }
-                }
-            }
-        }
-        
-        private List<Dictionary<string, object>>  MakeJsonObjectFromDataTable(Dictionary<string, Define> define, DataTable dataTable)
+
+        //        var maxDummyLine = 0;
+        //    foreach (var kv in defineDatas)
+        //    {
+        //        maxDummyLine += GetDummyLine(kv.Value);
+        //    }
+
+        //    if(dataTable.Rows[maxDummyLine].ItemArray[0].ToString().Equals("Id") == false)
+        //    {
+        //        throw new FormatException("Id는 첫번째 필드에 존재해야합니다.");
+        //    }
+
+        //    if (dataTable.Rows[maxDummyLine].ItemArray[1].ToString().Equals("Name") == false)
+        //    {
+        //        throw new FormatException("Name는 두번째 필드에 존재해야합니다.");
+        //    }
+
+        //    var columnIndex = 0;
+        //    foreach(var kv in defineDatas)
+        //    {
+        //        var dummyLine = GetDummyLine(kv.Value);
+
+        //        var columnName = dataTable.Rows[maxDummyLine - dummyLine].ItemArray[columnIndex].ToString();
+
+        //        if(columnName.Equals(kv.Key) == false)
+        //        {
+        //            throw new FormatException($"Data 필드와 Define 필드 동일하지 않습니다. Define : {kv.Key} Data : {columnName}");
+        //        }
+
+        //        columnIndex += kv.Value.Count;
+        //    }
+
+        //    var dataIndex = 1 + maxDummyLine;
+        //    for (int i= dataIndex; i<dataTable.Rows.Count; ++i)
+        //    {
+        //        var idDataValue = dataTable.Rows[i][0].ToString();
+
+        //        var nameDataValue = dataTable.Rows[i][1].ToString();
+
+        //        for (int ii = i + 1; ii < dataTable.Rows.Count; ++ii)
+        //        {
+        //            if (dataTable.Rows[ii][0].ToString().Equals(idDataValue))
+        //            {
+        //                throw new FormatException($"Row {ii} Id 값이 중복입니다. id : {idDataValue}");
+        //            }
+
+        //            if (dataTable.Rows[ii][1].ToString().Equals(nameDataValue))
+        //            {
+        //                throw new FormatException($"Row {ii} Name 값이 중복입니다. name : {nameDataValue}");
+        //            }
+        //        }
+        //    }
+        //}
+        //private int GetDummyLine(Define define)
+        //{
+        //    var dummyLine = 0;
+
+        //    if(define.Members.Count > 0)
+        //    {
+        //        dummyLine++;
+        //    }
+
+        //    foreach(var memberDefine in define.Members.Values)
+        //    {
+        //        if(memberDefine == null)
+        //        {
+        //            throw new FormatException($"member Name {memberDefine.Name} 를 찾을 수 없습니다.");
+        //        }
+        //        dummyLine += GetDummyLine(memberDefine);
+        //    }
+
+        //    return dummyLine;
+        //}
+        private List<Dictionary<string, object>>  MakeJsonObjectFromDataTable(Dictionary<string, Define> defineDatas,
+                                                                                DataTable dataTable)
         {
             var jsonObjects = new List<Dictionary<string, object>>();
 
-            foreach (DataRow row in dataTable.Rows)
-            {
-                var dic = new Dictionary<string, object>();
-                foreach(var defineValue in define.Values)
-                {
-                    object value = null;
-                    if(defineValue.Count > 1)
-                    {
-                        var listType = typeof(List<>);
-                        Type constructed = listType.MakeGenericType(defineValue.Type);
-                        var list = (System.Collections.IList)Activator.CreateInstance(constructed);
-                        for (int i = 0; i < defineValue.Count; ++i)
-                        {
-                            var rowName = $"{ defineValue.Name }";
-                            if (i > 0)
-                            {
-                                rowName += $"{i}";
-                            }
-                            var dataValue = Convert.ChangeType(row[rowName], defineValue.Type);
-                            list.Add(dataValue);
-                        }
-                        value = list;
-                    }
-                    else
-                    {
-                        value = Convert.ChangeType(row[defineValue.Name], defineValue.Type);
-                    }
-                    if(defineValue.Required == true)
-                    {
-                        if(value == null)
-                        {
-                            throw new Exception($"{defineValue.Name} is required field");
-                        }
-                    }
-                    dic.Add(defineValue.Name, value);
-                }
-                jsonObjects.Add(dic);
-            }
+            //for (int i = 1; i < dataTable.Rows.Count; ++i)
+            //{
+            //    var dic = new Dictionary<string, object>();
+            //    var columnIndex = 0;
+
+            //    foreach (var kv in defineDatas)
+            //    {
+            //        object value = null;
+
+            //        if (kv.Value.Count > 1)
+            //        {
+            //            var listType = typeof(List<>);
+            //            Type constructed = listType.MakeGenericType(kv.Value.Type);
+            //            var list = (System.Collections.IList)Activator.CreateInstance(constructed);
+            //            for (int ii = 0; ii < kv.Value.Count; ++ii)
+            //            {
+            //                var dataValue = Convert.ChangeType(dataTable.Rows[i].ItemArray[columnIndex + ii], kv.Value.Type);
+            //                list.Add(dataValue);
+            //            }
+            //            value = list;
+            //        }
+            //        else
+            //        {
+            //            value = Convert.ChangeType(dataTable.Rows[i].ItemArray[columnIndex], kv.Value.Type);
+            //        }
+            //        if (kv.Value.Required == true)
+            //        {
+            //            if (value == null)
+            //            {
+            //                throw new Exception($"{kv.Key} is required field");
+            //            }
+            //        }
+            //        dic.Add(kv.Key, value);
+            //        columnIndex += kv.Value.Count;
+            //    }
+            //    jsonObjects.Add(dic);
+            //}
             return jsonObjects;
         }
         private void ExportJsonFile(string outputPath, string fileName, List<Dictionary<string, object>> jsonDatas)
@@ -131,40 +196,110 @@ namespace ExcelToJson
         private Dictionary<string,  Define> GetDefineFromDataTable(DataTable dataTable)
         {
             Dictionary<string, Define> defines = new Dictionary<string, Define>();
-            List<List<int>> defineMemberCount = new List<List<int>>();
+            List<DefinitionColumnType> defineColumns = new List<DefinitionColumnType>();
 
-            for(var e = DefinitionColumnType.Name; e< DefinitionColumnType.Max; ++e)
+            for (int i = 0; i < dataTable.Rows[0].ItemArray.Length; ++i)
             {
-                defineMemberCount.Add(new List<int>());
-            }
-            for (int i=0; i < (int)DefinitionColumnType.Max; ++i)
-            {
-                for(int ii=0; ii< dataTable.Rows[0].ItemArray.Length; ++ii)
+                var value = dataTable.Rows[0].ItemArray[i].ToString();
+                var definitionColumnType = (DefinitionColumnType)Enum.Parse(typeof(DefinitionColumnType), value);
+                if (value.ToString() == definitionColumnType.ToString())
                 {
-                    var value = dataTable.Rows[0].ItemArray[ii];
-                    if(value.ToString() == Enum.GetName(typeof(DefinitionColumnType), value.ToString()))
-                    {
-                        defineMemberCount[i].Add(ii);
-                    }
+                    defineColumns.Add(definitionColumnType);
                 }
             }
 
+            for(int i=1; i< dataTable.Rows.Count; ++i)
+            {
+                var row = dataTable.Rows[i];
+                var define = GetDefineData(row, defineColumns);
 
+                //for (int ii=0; ii< define.Members.Count; ++ii)
+                //{
+                //    var memberRow = i + 1 + ii;
+                //    var memberDefine = GetDefineData(dataTable.Rows[memberRow], defineColumns);
 
-            //foreach (DataRow row in dataTable.Rows)
-            //{
-            //    Define define = new Define();
-            //    define.Name = row["Name"].ToString();
-            //    define.Required = bool.Parse(row["Required"].ToString());
-            //    define.Count = int.Parse(row["Count"].ToString());
-            //    define.Type = Type.GetType($"System.{row["Type"]}", true, true);
+                //    if(define.Members.ContainsKey(memberDefine.Name) == false)
+                //    {
+                //        throw new Exception($"Not Found Member Field! Key : {memberDefine.Name}");
+                //    }
+                //    define.Members[memberDefine.Name] = memberDefine;
+                //    ++i;
+                //}
 
-            //    defines.Add(define.Name, define);
-            //}
+                defines.Add(define.Name, define);
+            }
 
             return defines;
         }
+        private Define GetDefineData(DataRow row, List<DefinitionColumnType> defineMembers)
+        {
+            var defineData = new Define();
+            var index = 0;
+            foreach (var defineMember in defineMembers)
+            {
+                var columnType = defineMember;
 
+                if (columnType == DefinitionColumnType.Name)
+                {
+                    defineData.Name = row.ItemArray[index].ToString();
+                }
+                else if (columnType == DefinitionColumnType.Required)
+                {
+                    defineData.Required = bool.Parse(row.ItemArray[index].ToString());
+                }
+                else if (columnType == DefinitionColumnType.Count)
+                {
+                    defineData.Count = int.Parse(row.ItemArray[index].ToString());
+
+                    if(defineData.Count <= 0)
+                    {
+                        throw new Exception($"Must be greater than 0. {row.ItemArray[index]}");
+                    }
+
+                }
+                else if (columnType == DefinitionColumnType.Type)
+                {
+                    if(GetDataType(row.ItemArray[index].ToString(), defineData) == false)
+                    {
+                        throw new Exception($"Data Type Invalid! type : {row.ItemArray[index]}");
+                    }
+                }
+                else if (columnType == DefinitionColumnType.Member)
+                {
+                    var value = row.ItemArray[index].ToString();
+
+                    if(string.IsNullOrEmpty(value) == true)
+                    {
+                        continue;
+                    }
+
+                    if (defineData.DataType != DataType.Class)
+                    {
+                        throw new Exception($"Type is not class! {defineData.DataType}");
+                    }
+                    
+                    defineData.Members.Add(row.ItemArray[index].ToString());
+
+
+                }
+                index++;
+            }
+            return defineData;
+        }
+
+        private bool GetDataType(string type, Define define)
+        {
+            for(int i=0; i< (int)DataType.Max; ++i)
+            {
+                if(type.ToLower() == DataHelper.DataTypeToString[i])
+                {
+                    define.DataType = (DataType)i;
+                    return true;
+                }
+            }
+
+            return false;
+        }
         private DataTable GetDataTableFromDataSheet(string path, string sheetName)
         {
             DataTable dataTable = null;
@@ -200,79 +335,5 @@ namespace ExcelToJson
             }
             return dataTable;
         }
-
-        //private bool Validate(string path)
-        //{
-        //    Application app = new Application();
-        //    Workbook workbook = null;
-        //    try
-        //    {
-        //        workbook = app.Workbooks.Open(path);
-
-        //        var sheetNames = new List<string>();
-        //        foreach (Worksheet sheet in workbook.Worksheets)
-        //        {
-        //            sheetNames.Add(sheet.Name.ToLower());
-        //        }
-
-        //        if (sheetNames.Contains(DataSheetName.ToLower()) == false)
-        //        {
-        //            Console.ForegroundColor = ConsoleColor.Red;
-        //            Console.WriteLine($"{path} Data Sheet Not Found!");
-        //            return false;
-        //        }
-
-        //        if (sheetNames.Contains(DefinitionSheetName.ToLower()) == false)
-        //        {
-        //            Console.ForegroundColor = ConsoleColor.Red;
-        //            Console.WriteLine($"{path} Definition Sheet Not Found!");
-        //            return false;
-        //        }
-
-        //        return true;
-        //    }
-        //    catch(Exception ex)
-        //    {
-        //        throw new FormatException(ex.Message);
-        //    }
-        //    finally
-        //    {
-        //        workbook?.Close();
-        //        app.Quit();
-        //    }
-            
-        //}
-        //public System.Data.DataTable MakeDataTable(System.Data.DataTable definitionDataTable)
-        //{
-        //    var dataTable = new System.Data.DataTable();
-
-        //    for (int i = 0; i < definitionDataTable.Rows.Count; ++i)
-        //    {
-        //        var column = new System.Data.DataColumn();
-        //        for (int ii = 0; ii < definitionDataTable.Columns.Count; ++ii)
-        //        {
-        //            var columnType = (DefinitionColumnType)Enum.Parse(typeof(DefinitionColumnType), definitionDataTable.Columns[ii].ColumnName);
-        //            if (columnType == DefinitionColumnType.Name)
-        //            {
-        //                column.ColumnName = definitionDataTable.Rows[i][ii].ToString();
-        //            }
-        //            else if (columnType == DefinitionColumnType.Type)
-        //            {
-        //                column.DataType = Type.GetType(definitionDataTable.Rows[i][ii].ToString());
-        //            }
-        //            else if (columnType == DefinitionColumnType.Count)
-        //            {
-        //                var count = int.Parse(definitionDataTable.Rows[i][definitionDataTable.Columns[ii].ColumnName].ToString());
-        //                if(count > 1)
-        //                {
-        //                    column.DataType = Type.GetType($"System.Collections.Generic.List`1[{column.DataType}]");
-        //                }
-        //            }
-        //        }
-        //        dataTable.Columns.Add(column);
-        //    }
-
-        //    return dataTable;
-        //}
     }
 }

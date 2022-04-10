@@ -14,8 +14,10 @@ namespace ExcelToJson.Data
 
         public bool Required { get; set; }
 
-        public string Group { get; set; }
+        public DataType DataType { get; set; }
 
-        public Type Type { get; set; }
+        public List<string> Members { get; set; } = new List<string>();
+
+        public string ParentName { get; set; }
     }
 }

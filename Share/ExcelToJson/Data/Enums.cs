@@ -19,4 +19,26 @@ namespace ExcelToJson.Data
 
         Max,
     }
+
+    public enum DataType
+    {
+        Class,
+        Int32,
+        Int64,
+        String,
+        
+
+        Max,
+    }
+    public class DataHelper
+    {
+        public static string[] DataTypeToString { get; set; } = new string[(int)DataType.Max]
+        {
+            "class",
+            "int32",
+            "int64",
+            "string",
+        };
+    }
+
 }
