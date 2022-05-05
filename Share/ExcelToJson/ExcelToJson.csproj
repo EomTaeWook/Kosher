@@ -70,6 +70,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\ClassMemeberInfoData.cs" />
     <Compile Include="Data\Config.cs" />
     <Compile Include="Data\Enums.cs" />
     <Compile Include="Data\Interface\IExcelTemplate.cs" />

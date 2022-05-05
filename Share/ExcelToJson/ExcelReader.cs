@@ -1,22 +1,23 @@
 ﻿
 using ExcelToJson.Data;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
 using System.IO;
+using System.Linq;
 using DataTable = System.Data.DataTable;
 
 namespace ExcelToJson
 {
     public class ExcelReader
     {
-        private Dictionary<string, string> findParent = new Dictionary<string, string>();
-
-
         private const string DataSheetName = "Data$";
         private const string DefineSheetName = "Define$";
         private const string ConnectString = @"Provider=Microsoft.ACE.OLEDB.12.0; Data Source={0};Extended Properties=""Excel 12.0 Xml;HDR=NO;IMEX=1;MAXSCANROWS=0""";
+
+        private Dictionary<string, ClassMemeberInfoData> classMemberToMap = new Dictionary<string, ClassMemeberInfoData>();
         public void Read(string excelPath, string outputPath)
         {
             var fileName = Path.GetFileNameWithoutExtension(excelPath);
@@ -137,51 +138,107 @@ namespace ExcelToJson
 
         //    return dummyLine;
         //}
-        private List<Dictionary<string, object>>  MakeJsonObjectFromDataTable(Dictionary<string, Define> defineDatas,
+        private List<JObject>  MakeJsonObjectFromDataTable(Dictionary<string, Define> defineDatas,
                                                                                 DataTable dataTable)
         {
-            var jsonObjects = new List<Dictionary<string, object>>();
+            var jsonObjects = new List<JObject>();
 
-            //for (int i = 1; i < dataTable.Rows.Count; ++i)
-            //{
-            //    var dic = new Dictionary<string, object>();
-            //    var columnIndex = 0;
+            var firstField = defineDatas.Keys.FirstOrDefault();
+            if(firstField == null)
+            {
+                throw new Exception($"not found first field");
+            }
 
-            //    foreach (var kv in defineDatas)
-            //    {
-            //        object value = null;
+            var dummyLine = 0;
+            for (int i = 0; i < dataTable.Rows.Count; ++i)
+            {
+                var value = dataTable.Rows[i].ItemArray[0].ToString();
+                if (string.IsNullOrEmpty(value) == true)
+                {
+                    dummyLine++;
+                }
+                if(value.Equals(firstField) == true)
+                {
+                    break;
+                }
+            }
+            for(int i= dummyLine + 1; i<dataTable.Rows.Count; ++i)
+            {
+                var index = 0;
+                Dictionary<string, JToken> rowTokenDatas = new Dictionary<string, JToken>();
 
-            //        if (kv.Value.Count > 1)
-            //        {
-            //            var listType = typeof(List<>);
-            //            Type constructed = listType.MakeGenericType(kv.Value.Type);
-            //            var list = (System.Collections.IList)Activator.CreateInstance(constructed);
-            //            for (int ii = 0; ii < kv.Value.Count; ++ii)
-            //            {
-            //                var dataValue = Convert.ChangeType(dataTable.Rows[i].ItemArray[columnIndex + ii], kv.Value.Type);
-            //                list.Add(dataValue);
-            //            }
-            //            value = list;
-            //        }
-            //        else
-            //        {
-            //            value = Convert.ChangeType(dataTable.Rows[i].ItemArray[columnIndex], kv.Value.Type);
-            //        }
-            //        if (kv.Value.Required == true)
-            //        {
-            //            if (value == null)
-            //            {
-            //                throw new Exception($"{kv.Key} is required field");
-            //            }
-            //        }
-            //        dic.Add(kv.Key, value);
-            //        columnIndex += kv.Value.Count;
-            //    }
-            //    jsonObjects.Add(dic);
-            //}
+                foreach (var kv in defineDatas)
+                {
+                    JToken token = null;
+                    object value = null;
+
+                    if (kv.Value.Count > 1)
+                    {
+                        var array = new JArray();
+                        for (int ii=0; ii< kv.Value.Count; ++ii)
+                        {
+                            value = dataTable.Rows[i].ItemArray[index];
+                            var data = GetJTokenData(kv.Value, value);
+                            array.Add(data);
+                            index++;
+                        }
+                        token = array;
+                    }
+                    else if(kv.Value.DataType == DataType.Class)
+                    {
+                        value = dataTable.Rows[i].ItemArray[index];
+                        token = GetJTokenData(kv.Value, value);
+                    }
+                    else
+                    {
+                        value = dataTable.Rows[i].ItemArray[index];
+                        token = GetJTokenData(kv.Value, value);
+                        index++;
+                    }
+                    rowTokenDatas.Add(kv.Key, token);
+                }
+
+                var jobject = ProcessRowTokenData(rowTokenDatas);
+                jsonObjects.Add(jobject);
+            }
+
             return jsonObjects;
         }
-        private void ExportJsonFile(string outputPath, string fileName, List<Dictionary<string, object>> jsonDatas)
+        
+        public JToken GetJTokenData(Define define, object value)
+        {
+            if(define.DataType == DataType.Int32)
+            {
+                var dataValue = int.Parse(value.ToString());
+                
+                return JToken.FromObject(dataValue); 
+            }
+            else if(define.DataType == DataType.Int64)
+            {
+                var dataValue = long.Parse(value.ToString());
+
+                return JToken.FromObject(dataValue);
+            }
+            else if(define.DataType == DataType.String)
+            {
+                var dataValue = value.ToString();
+                if(string.IsNullOrEmpty(dataValue) == true)
+                {
+                    throw new ArgumentNullException();
+                }
+
+                return JToken.FromObject(dataValue);
+            }
+            else if(define.DataType == DataType.Class)
+            {
+                var classObject = new JObject();
+                return classObject;
+            }
+            
+            return null;
+        }
+        
+        private void ExportJsonFile(string outputPath, string fileName, List<JObject> jsonDatas)
         {
             if (Directory.Exists(outputPath) == false)
             {
@@ -231,6 +288,33 @@ namespace ExcelToJson
 
             return defines;
         }
+        private void ProcessClassMember(string key, JObject jObj, Dictionary<string, JToken> tokens)
+        {
+            var classMember = this.classMemberToMap[key];
+            JObject data = new JObject();
+            if(classMember.Parent == null)
+            {
+                jObj[key] = data;
+                return;
+            }
+            jObj[classMember.ParentName][classMember.MemberName] = tokens[key];
+        }
+        private JObject ProcessRowTokenData(Dictionary<string, JToken> tokens)
+        {
+            JObject obj = new JObject();
+            foreach (var kv in tokens)
+            {
+                if (this.classMemberToMap.ContainsKey(kv.Key) == true)
+                {
+                    ProcessClassMember(kv.Key, obj, tokens);
+                }
+                else
+                {
+                    obj[kv.Key] = kv.Value;
+                }
+            }
+            return obj;
+        }
         private Define GetDefineData(DataRow row, List<DefinitionColumnType> defineMembers)
         {
             var defineData = new Define();
@@ -278,15 +362,15 @@ namespace ExcelToJson
                         throw new Exception($"Type is not class! {defineData.DataType}");
                     }
                     
-                    defineData.Members.Add(row.ItemArray[index].ToString());
+                    defineData.Members.Add(value);
 
-
+                    AddParentData(row.ItemArray[index].ToString(), defineData.Name);
                 }
                 index++;
             }
             return defineData;
         }
-
+       
         private bool GetDataType(string type, Define define)
         {
             for(int i=0; i< (int)DataType.Max; ++i)
@@ -299,6 +383,23 @@ namespace ExcelToJson
             }
 
             return false;
+        }
+        private void AddParentData(string memeberName, string parentName)
+        {
+            if (classMemberToMap.ContainsKey(parentName) == false)
+            {
+                classMemberToMap.Add(parentName, new ClassMemeberInfoData()
+                {
+                    MemberName = parentName,
+                });
+            }
+            var memberInfoData = new ClassMemeberInfoData
+            {
+                MemberName = memeberName,
+                ParentName = parentName,
+                Parent = classMemberToMap[parentName]
+            };
+            classMemberToMap.Add(memeberName, memberInfoData);
         }
         private DataTable GetDataTableFromDataSheet(string path, string sheetName)
         {

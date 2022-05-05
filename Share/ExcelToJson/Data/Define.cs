@@ -17,7 +17,5 @@ namespace ExcelToJson.Data
         public DataType DataType { get; set; }
 
         public List<string> Members { get; set; } = new List<string>();
-
-        public string ParentName { get; set; }
     }
 }
