@@ -269,6 +269,10 @@ namespace ExcelToJson
             {
                 var row = dataTable.Rows[i];
                 var define = GetDefineData(row, defineColumns);
+                if(define != null)
+                {
+                    defines.Add(define.Name, define);
+                }
 
                 //for (int ii=0; ii< define.Members.Count; ++ii)
                 //{
@@ -282,8 +286,6 @@ namespace ExcelToJson
                 //    define.Members[memberDefine.Name] = memberDefine;
                 //    ++i;
                 //}
-
-                defines.Add(define.Name, define);
             }
 
             return defines;
@@ -323,21 +325,27 @@ namespace ExcelToJson
             {
                 var columnType = defineMember;
 
+                var value = row.ItemArray[index].ToString();
+
                 if (columnType == DefinitionColumnType.Name)
                 {
-                    defineData.Name = row.ItemArray[index].ToString();
+                    defineData.Name = value;
+                    if (string.IsNullOrEmpty(defineData.Name) == true)
+                    {
+                        return null;
+                    }
                 }
                 else if (columnType == DefinitionColumnType.Required)
                 {
-                    defineData.Required = bool.Parse(row.ItemArray[index].ToString());
+                    defineData.Required = bool.Parse(value.ToString());
                 }
                 else if (columnType == DefinitionColumnType.Count)
                 {
-                    defineData.Count = int.Parse(row.ItemArray[index].ToString());
+                    defineData.Count = int.Parse(value.ToString());
 
                     if(defineData.Count <= 0)
                     {
-                        throw new Exception($"Must be greater than 0. {row.ItemArray[index]}");
+                        throw new Exception($"Must be greater than 0. {value}");
                     }
 
                 }
@@ -345,14 +353,12 @@ namespace ExcelToJson
                 {
                     if(GetDataType(row.ItemArray[index].ToString(), defineData) == false)
                     {
-                        throw new Exception($"Data Type Invalid! type : {row.ItemArray[index]}");
+                        throw new Exception($"Data Type Invalid! type : {value}");
                     }
                 }
                 else if (columnType == DefinitionColumnType.Member)
                 {
-                    var value = row.ItemArray[index].ToString();
-
-                    if(string.IsNullOrEmpty(value) == true)
+                    if(string.IsNullOrEmpty(value.ToString()) == true)
                     {
                         continue;
                     }
