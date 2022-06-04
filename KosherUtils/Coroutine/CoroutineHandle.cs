@@ -4,7 +4,7 @@ using System.Collections;
 
 namespace KosherUtils.Coroutine
 {
-    public class CoroutineHandle : IEnumerator
+    public struct CoroutineHandle : IEnumerator
     {
         private ICoroutineWoker coroutineWoker;
         private IEnumerator enumerator;
