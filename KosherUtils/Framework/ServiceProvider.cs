@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KosherUtils.Framework
 {
@@ -14,14 +11,12 @@ namespace KosherUtils.Framework
 
         private Dictionary<string, Type> registeredTransientToMap = new Dictionary<string, Type>();
 
-        public void AddTransient<TService, TImplementation>() where TService : class
-                                                                where TImplementation : TService
+        public void AddTransient<TService, TImplementation>() where TService : class where TImplementation : TService
         {
             var name = typeof(TService).Name;
             registeredTransientToMap.Add(name, typeof(TImplementation));
         }
-        public void AddSingleton<TService, TImplementation>() where TService : class
-                                                                where TImplementation: TService
+        public void AddSingleton<TService, TImplementation>() where TService : class where TImplementation : TService
         {
             var name = typeof(TService).Name;
             registeredSingletonToMap.Add(name, typeof(TImplementation));
@@ -32,7 +27,6 @@ namespace KosherUtils.Framework
             registeredSingletonToMap.Add(name, typeof(TService));
             serviceToMap.Add(name, implementation);
         }
-
         public T GetService<T>() where T : class
         {
             return GetService(typeof(T).Name) as T;

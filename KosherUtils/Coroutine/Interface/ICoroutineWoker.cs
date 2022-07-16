@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 namespace KosherUtils.Coroutine.Interface
 {
     public interface ICoroutineWoker
@@ -6,5 +7,6 @@ namespace KosherUtils.Coroutine.Interface
         bool IsRunning(IEnumerator enumerator);
         bool Stop(IEnumerator enumerator);
         void StopAll();
+        CoroutineHandle Start(IEnumerator enumerator, Action onCompleteCallback);
     }
 }

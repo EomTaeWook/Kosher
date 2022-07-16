@@ -74,9 +74,7 @@
     <Compile Include="Coroutine\Interface\ICoroutineWoker.cs" />
     <Compile Include="Framework\ServiceProvider.cs" />
     <Compile Include="Log\Log.cs" />
-    <Compile Include="ObjectPool\Interface\IObjectPool.cs" />
-    <Compile Include="ObjectPool\Interface\IObjectPoolItem.cs" />
-    <Compile Include="ObjectPool\ObejctPool.cs" />
+    <Compile Include="ObjectPool\ObjectPool.cs" />
     <Compile Include="Framework\Singleton.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

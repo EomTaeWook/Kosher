@@ -21,9 +21,9 @@ public class SampleScene : MonoBehaviour
         }
         for (int i = 0; i < 10; i++)
         {
-            items[i].Recall<TempUI>();
+            items[i].Recycle<TempUI>();
         }
-        items.Clear();
+        //items.Clear();
 
         for (int i = 0; i < 5; i++)
         {
@@ -38,7 +38,7 @@ public class SampleScene : MonoBehaviour
         //}
 
         var temp1 = GameObject.Instantiate(TestObject1, Test);
-        temp1.Recall<TempUI1>();
+        temp1.Recycle<TempUI1>();
 
     }
 

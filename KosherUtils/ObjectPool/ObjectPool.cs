@@ -1,14 +1,14 @@
-﻿using KosherUtils.Framework;
-using KosherUtils.ObjectPool.Interface;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace KosherUtils.ObjectPool
 {
-    public class ObejctPool<T> :Singleton<ObejctPool<T>> where T : IObjectPoolItem, IObjectPool, new()
+    public partial class ObjectPool<T> where T : class, new()
     {
         private Stack<T> objectPools = new Stack<T>();
-        private List<T> activeObjects = new List<T>();
-
+        private HashSet<T> activeObjects = new HashSet<T>();
+        public ObjectPool()
+        {
+        }
         public void CreatePool(int maxSize)
         {
             objectPools.Clear();
@@ -19,7 +19,6 @@ namespace KosherUtils.ObjectPool
                 objectPools.Push(new T());
             }
         }
-
         public T Pop()
         {
             T item;
@@ -36,19 +35,9 @@ namespace KosherUtils.ObjectPool
         }
         public void Push(T item)
         {
-            T findObject = default;
-            for(int i=0;i<activeObjects.Count; ++i)
+            if(activeObjects.Contains(item) == true)
             {
-                if(activeObjects[i].GetHashCode() == item.GetHashCode())
-                {
-                    findObject = activeObjects[i];
-                    break;
-                }
-            }
-
-            if(findObject!=null)
-            {
-                activeObjects.Remove(findObject);
+                activeObjects.Remove(item);
                 return;
             }
 
@@ -56,16 +45,12 @@ namespace KosherUtils.ObjectPool
             {
                 return;
             }
-            findObject = item;
 
-            objectPools.Push(findObject);
+            objectPools.Push(item);
         }
         public void Clear()
         {
-            for(int i=0; i< activeObjects.Count; ++i)
-            {
-                activeObjects[i].Recycle();
-            }
+            activeObjects.Clear();
             objectPools.Clear();
         }
         private bool CheckAlreadyPool(T item)
