@@ -72,6 +72,7 @@
     <Compile Include="Coroutine\CoroutineHandle.cs" />
     <Compile Include="Coroutine\CoroutineWoker.cs" />
     <Compile Include="Coroutine\Interface\ICoroutineWoker.cs" />
+    <Compile Include="Framework\ServiceProvider.cs" />
     <Compile Include="Log\Log.cs" />
     <Compile Include="ObjectPool\Interface\IObjectPool.cs" />
     <Compile Include="ObjectPool\Interface\IObjectPoolItem.cs" />
