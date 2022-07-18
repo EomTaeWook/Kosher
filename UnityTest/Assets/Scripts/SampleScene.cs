@@ -13,7 +13,7 @@ public class SampleScene : MonoBehaviour
     private List<TempUI> items = new List<TempUI>();
     void Start()
     {
-        for(int i=0;i<10; i++)
+        for (int i = 0; i < 10; i++)
         {
             var obj = KosherUnityObjectPool.CallLocation<TempUI>(TestObject);
             obj.text.text = $"test{i}";
@@ -32,14 +32,24 @@ public class SampleScene : MonoBehaviour
             obj.text.text = $"test{i + 10 }";
             items.Add(obj);
         }
-        //for(int i=0; i<items.Count; ++i)
-        //{
-        //    items[i].Recycle();
-        //}
+        for (int i = 0; i < items.Count; ++i)
+        {
+            items[i].Recycle<TempUI>();
+        }
 
-        var temp1 = GameObject.Instantiate(TestObject1, Test);
-        temp1.Recycle<TempUI1>();
+        var demonKing = Load();
 
+        var demonKing1 = Load();
+
+        demonKing.Recycle<TempUI1>();
+
+        //var demonKing2 = Load();
+    }
+
+    private TempUI1 Load()
+    {
+        var demonKing = KosherUnityResourceCache.Instance.LoadResouce<GameObject>("BaseCharacter");
+        return KosherUnityObjectPool.CallLocation<TempUI1>(demonKing, Test);
     }
 
     // Update is called once per frame

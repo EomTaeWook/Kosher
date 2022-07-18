@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class TempUI1 : MonoBehaviour
 {
-    public Text text;
+    public BoxCollider2D box;
     // Start is called before the first frame update
     void Start()
     {
