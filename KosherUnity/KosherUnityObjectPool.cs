@@ -82,7 +82,7 @@ namespace KosherUnity
         {
             if (objectPools.ContainsKey(item.name) == false)
             {
-                return true;
+                objectPools.Add(item.name, new Stack<GameObject>());
             }
             return objectPools[item.name].Contains(item);
         }

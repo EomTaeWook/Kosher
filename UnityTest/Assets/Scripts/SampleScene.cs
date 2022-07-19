@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using KosherUnity;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -33,7 +34,7 @@ public class SampleScene : MonoBehaviour
         }
         for (int i = 0; i < items.Count; ++i)
         {
-            //items[i].Recycle<TempUI>();
+            items[i].Recycle<TempUI>();
         }
 
         var demonKing = Load();

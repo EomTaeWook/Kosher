@@ -19,6 +19,7 @@ namespace KosherUtils.ObjectPool
                 objectPools.Push(new T());
             }
         }
+
         public T Pop()
         {
             T item;
