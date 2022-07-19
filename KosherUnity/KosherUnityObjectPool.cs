@@ -30,7 +30,7 @@ namespace KosherUnity
         {
         }
 
-        public T Pop<T>(GameObject prefab) where T : Component
+        public GameObject Pop(GameObject prefab)
         {
             GameObject go;
             var typeName = prefab.name;
@@ -47,6 +47,11 @@ namespace KosherUnity
                 go = GameObject.Instantiate(prefab);
             }
             activeObjects.Add(go);
+            return go;
+        }
+        public T Pop<T>(GameObject prefab) where T : Component
+        {
+            var go = Pop(prefab);
             return go.GetComponent<T>();
         }
         public void Push(Component item)
@@ -77,7 +82,7 @@ namespace KosherUnity
         {
             if (objectPools.ContainsKey(item.name) == false)
             {
-                return false;
+                return true;
             }
             return objectPools[item.name].Contains(item);
         }
