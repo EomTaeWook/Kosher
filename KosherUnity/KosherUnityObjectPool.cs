@@ -30,10 +30,10 @@ namespace KosherUnity
         {
         }
 
-        public GameObject Pop(GameObject prefab)
+        public GameObject Pop(GameObject item)
         {
             GameObject go;
-            var typeName = prefab.name;
+            var typeName = item.name;
             if (objectPools.ContainsKey(typeName) == false)
             {
                 objectPools.Add(typeName, new Stack<GameObject>());
@@ -44,28 +44,32 @@ namespace KosherUnity
             }
             else
             {
-                go = GameObject.Instantiate(prefab);
+                go = GameObject.Instantiate(item);
             }
             activeObjects.Add(go);
             return go;
         }
-        public T Pop<T>(GameObject prefab) where T : Component
+        public T Pop<T>(GameObject item) where T : Component
         {
-            var go = Pop(prefab);
+            var go = Pop(item);
             return go.GetComponent<T>();
         }
         public void Push(Component item)
         {
-            var typeName = item.gameObject.name;
-            if (activeObjects.Contains(item.gameObject) == true)
+            Push(item.gameObject);
+        }
+        public void Push(GameObject item)
+        {
+            var typeName = item.name;
+            if (activeObjects.Contains(item) == true)
             {
-                activeObjects.Remove(item.gameObject);
+                activeObjects.Remove(item);
             }
-            if (CheckAlreadyPool(item.gameObject) == true)
+            if (CheckAlreadyPool(item) == true)
             {
                 return;
             }
-            objectPools[typeName].Push(item.gameObject);
+            objectPools[typeName].Push(item);
         }
         public void Clear()
         {
