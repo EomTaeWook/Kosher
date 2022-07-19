@@ -22,7 +22,7 @@ namespace KosherUnity
         public static T CallLocation<T>(GameObject prefab, Transform parent) where T : Component
         {
             var component = KosherUnityObjectPool.Instance.Pop<T>(prefab);
-            component.gameObject.transform.SetParent(parent);
+            component.gameObject.transform.SetParent(parent, false);
             component.gameObject.gameObject.SetActive(true);
             return component;
         }
