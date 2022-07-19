@@ -1,5 +1,4 @@
-﻿using KosherUnity;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -21,7 +20,7 @@ public class SampleScene : MonoBehaviour
         }
         for (int i = 0; i < 10; i++)
         {
-            items[i].Recycle<TempUI>();
+            KosherUnityObjectPool.Instance.Push(items[i]);
         }
         //items.Clear();
 
@@ -34,21 +33,21 @@ public class SampleScene : MonoBehaviour
         }
         for (int i = 0; i < items.Count; ++i)
         {
-            items[i].Recycle<TempUI>();
+            //items[i].Recycle<TempUI>();
         }
 
         var demonKing = Load();
 
         var demonKing1 = Load();
 
-        demonKing.Recycle<TempUI1>();
+        //demonKing.Recycle<TempUI1>();
 
         //var demonKing2 = Load();
     }
 
     private TempUI1 Load()
     {
-        var demonKing = KosherUnityResourceCache.Instance.LoadResouce<GameObject>("BaseCharacter");
+        var demonKing = KosherUnity.KosherUnityResourceCache.Instance.LoadResouce<GameObject>("BaseCharacter");
         return KosherUnityObjectPool.CallLocation<TempUI1>(demonKing, Test);
     }
 

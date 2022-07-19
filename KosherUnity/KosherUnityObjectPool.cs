@@ -5,17 +5,21 @@ namespace KosherUnity
 {
     public class KosherUnityObjectPool : SingletonWithMonoBehaviour<KosherUnityObjectPool>
     {
-        private Dictionary<System.Type, Stack<Component>> objectPools = new Dictionary<System.Type, Stack<Component>>();
-        private HashSet<Component> activeObjects = new HashSet<Component>();
-        public static T CallLocation<T>(T prefab) where T : Component
+        private Dictionary<string, Stack<GameObject>> objectPools = new Dictionary<string, Stack<GameObject>>();
+        private HashSet<GameObject> activeObjects = new HashSet<GameObject>();
+        public static T CallLocation<T>(Component component) where T : Component
         {
-            return CallLocation(prefab, null);
+            return CallLocation<T>(component.gameObject);
         }
-        public static T CallLocation<T>(GameObject go, Transform parent) where T : Component
+        public static T CallLocation<T>(GameObject prefab) where T : Component
         {
-            return CallLocation(go.GetComponent<T>(), parent);
+            return CallLocation<T>(prefab, null);
         }
-        public static T CallLocation<T>(T prefab, Transform parent) where T : Component
+        public static T CallLocation<T>(Component component, Transform parent) where T : Component
+        {
+            return CallLocation<T>(component.gameObject, parent);
+        }
+        public static T CallLocation<T>(GameObject prefab, Transform parent) where T : Component
         {
             var component = KosherUnityObjectPool.Instance.Pop<T>(prefab);
             component.gameObject.transform.SetParent(parent);
@@ -26,43 +30,56 @@ namespace KosherUnity
         {
         }
 
-        public T Pop<T>(Component prefab) where T: Component
+        public T Pop<T>(GameObject prefab) where T : Component
         {
-            T obj;
-            var type = typeof(T);
-            if (objectPools.ContainsKey(type) == false)
+            GameObject go;
+            var typeName = prefab.name;
+            if (objectPools.ContainsKey(typeName) == false)
             {
-                objectPools.Add(type, new Stack<Component>());
+                objectPools.Add(typeName, new Stack<GameObject>());
             }
-            if (objectPools[type].Count > 0)
+            if (objectPools[typeName].Count > 0)
             {
-                var item = objectPools[type].Pop();
-                obj = item.GetComponent<T>();
+                go = objectPools[typeName].Pop();
             }
             else
             {
-                var go = GameObject.Instantiate(prefab);
-                obj = go.GetComponent<T>();
+                go = GameObject.Instantiate(prefab);
             }
-            activeObjects.Add(obj);
-            return obj;
+            activeObjects.Add(go);
+            return go.GetComponent<T>();
         }
         public void Push(Component item)
         {
-            if(activeObjects.Contains(item) == true)
+            var typeName = item.gameObject.name;
+            if (activeObjects.Contains(item.gameObject) == true)
             {
-                activeObjects.Remove(item);
+                activeObjects.Remove(item.gameObject);
             }
-
-            if (CheckAlreadyPool(item) == true)
+            if (CheckAlreadyPool(item.gameObject) == true)
             {
                 return;
             }
-            objectPools[item.GetType()].Push(item);
+            objectPools[typeName].Push(item.gameObject);
         }
-        private bool CheckAlreadyPool(Component item)
+        public void Clear()
         {
-            return objectPools[item.GetType()].Contains(item);
+            foreach (var kv in objectPools)
+            {
+                while (objectPools[kv.Key].Count > 0)
+                {
+                    var item = objectPools[kv.Key].Pop();
+                    Destroy(item);
+                }
+            }
+        }
+        private bool CheckAlreadyPool(GameObject item)
+        {
+            if (objectPools.ContainsKey(item.name) == false)
+            {
+                return false;
+            }
+            return objectPools[item.name].Contains(item);
         }
     }
 }
