@@ -60,7 +60,6 @@ namespace KosherUnity
         }
         public void Push(GameObject item)
         {
-            var typeName = item.name;
             if (activeObjects.Contains(item) == true)
             {
                 activeObjects.Remove(item);
@@ -69,6 +68,7 @@ namespace KosherUnity
             {
                 return;
             }
+            var typeName = GetTypeName(item);
             objectPools[typeName].Push(item);
         }
         public void Clear()
@@ -81,14 +81,30 @@ namespace KosherUnity
                     Destroy(item);
                 }
             }
+            objectPools.Clear();
         }
+        public void AllClear()
+        {
+            Clear();
+            foreach(var item in activeObjects)
+            {
+                Destroy(item);
+            }
+            activeObjects.Clear();
+        }
+        
         private bool CheckAlreadyPool(GameObject item)
         {
-            if (objectPools.ContainsKey(item.name) == false)
+            var typeName = GetTypeName(item);
+            if (objectPools.ContainsKey(typeName) == false)
             {
-                objectPools.Add(item.name, new Stack<GameObject>());
+                objectPools.Add(typeName, new Stack<GameObject>());
             }
-            return objectPools[item.name].Contains(item);
+            return objectPools[typeName].Contains(item);
+        }
+        private string GetTypeName(GameObject item)
+        {
+            return item.name.Replace("(Clone)", "");
         }
     }
 }
